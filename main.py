@@ -5,6 +5,17 @@ import math
 import random
 from PIL import Image
 
+#SET THESE VALUES FOR YOUR OWN SYSTEM!!!
+
+#depending on your system, you might only have to change the spot that says 'hydro' with your name. This will create a new colour scheme called "dynamic"
+terminal_path = "/home/hydro/.local/share/xfce4/terminal/colorschemes/dynamic.txt"
+
+scale = 64; #this is how big each square is in the colour palette image output
+
+#don't touch anything below this line unless you know what you're doing
+
+#This is the beginning of the borrowed colour script:
+
 Point = namedtuple('Point', ('coords', 'n', 'ct'))
 Cluster = namedtuple('Cluster', ('points', 'center', 'n'))
 
@@ -74,17 +85,13 @@ def hex_to_rgb(value):
     lv = len(value)
     return tuple(int(value[i:i + lv // 3], 16) for i in range(0, lv, lv // 3))
 
+#now to adapt the data to xfce4
 
 #main program
 
-terminal_path = "/home/hydro/.local/share/xfce4/terminal/colorschemes/dynamic.txt"
-
-scale = 64;
 filename = input("File Path: ")
 num_colours = int(input("How Many Colours? "))
-show_palette = bool(input("Show palette? "))
-
-#don't touch anything below this
+show_palette = bool(input("Show palette? ")) #I know this doesn't work
 
 list_colours_hex = list(colorz(filename, num_colours))
 list_colours_rgb = list_colours_hex
@@ -105,15 +112,12 @@ for i in range(len(list_colours_hex)):
 
 palette.sort(key=lambda i: sum(i[0])/3)
 
-
-
 image_palette = []
 
 # the list for the actual pixels
 for i in range(len(palette)):
     for j in range(scale * scale):
         image_palette.append(palette[i][0])
-
 
 for colour in palette:
     print(colour[0],"Hex:", colour[1])
@@ -139,7 +143,7 @@ term_data[3] = "ColorBackground=" + palette[0][1] + "\n"
 
 #palette
 
-#works but slow and colours might blend
+#works but slow and colours might blend in with each other
 
 term_data[4] = "ColorPalette=" + "".join(palette[i + math.ceil(num_colours / 2)][2] for i in range(num_colours - math.ceil(num_colours / 2)) for j in range(math.ceil(32 / num_colours)))
 
